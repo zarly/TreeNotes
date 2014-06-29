@@ -1,0 +1,71 @@
+<!doctype html>
+<html>
+<head>
+	<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+	<!--script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.1/angular.min.js"></script-->
+	<script type="text/javascript" src="//cdn.jsdelivr.net/parse/1.2.9/parse.min.js"></script>
+	<script type="text/javascript">
+		Parse.initialize("uRpZjBrzBbbKztFn9APIKVTjCGjf3TsDAk7ztf5R", "rylYjghPAksjHvdlMl5wfzKwX2GhwBw4iGkggUg1");
+
+		var Article = Parse.Object.extend("Article");
+		var article;
+		var query = new Parse.Query(Article);
+		var lastText;
+		var uid = 'vk' + getVkId();
+
+		function getVkId () {
+			return location.search.match('viewer_id=([0-9]+)')[1];
+		}
+
+		function sendToBackend () {
+			var text = $('#mainTextArea').val();
+
+			if (text === lastText) {
+				return;
+			} else {
+				lastText = text;
+			}
+
+			article.set('mainText', text);
+			article.set('uid', uid);
+
+			article.save(null, {
+			  success: function(gameScore) {
+			    console.log("The object was saved successfully.");
+			  },
+			  error: function(gameScore, error) {
+			    console.error("Error in sendToBackend:", error);
+			  }
+			});
+		}
+
+		$(function () {
+			query.equalTo("uid", uid);
+			query.find({
+			  success: function(records) {
+			  	console.log('records', records);
+
+			  	if (records[0]) {
+			  		article = records[0];
+			  	} else {
+			  		article = new Article();
+			  	}
+
+			    var mainText = article.get('mainText');
+			    $('#mainTextArea').val(mainText);
+
+				$('#mainTextArea').on('change', sendToBackend);
+				setInterval(sendToBackend, 5000);
+			  },
+			  error: function(object, error) {
+			    // The object was not retrieved successfully.
+			    console.log("error is a Parse.Error with an error code and description.", error);
+			  }
+			});
+		});
+	</script>
+</head>
+<body style="padding: 0; margin: 0; overflow: hidden;">
+<textarea style="width: 100%; height: 100%; position: absolute; border: 0;" id="mainTextArea"></textarea>
+</body>
+</html>
