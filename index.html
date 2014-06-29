@@ -1,6 +1,7 @@
 <!doctype html>
 <html>
 <head>
+	<title>Блокнот</title>
 	<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 	<!--script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.1/angular.min.js"></script-->
 	<script type="text/javascript" src="//cdn.jsdelivr.net/parse/1.2.9/parse.min.js"></script>
@@ -49,16 +50,16 @@
 			  		article = records[0];
 			  	} else {
 			  		article = new Article();
+					article.set('mainText', 'Здесь можно разместить любые записи и они будут доступны только Вам с Вашей странички ВКонтакте где бы Вы ни были...');
 			  	}
 
 			    var mainText = article.get('mainText');
 			    $('#mainTextArea').val(mainText);
 
 				$('#mainTextArea').on('change', sendToBackend);
-				setInterval(sendToBackend, 5000);
+				setInterval(sendToBackend, 1000);
 			  },
 			  error: function(object, error) {
-			    // The object was not retrieved successfully.
 			    console.log("error is a Parse.Error with an error code and description.", error);
 			  }
 			});
@@ -66,6 +67,6 @@
 	</script>
 </head>
 <body style="padding: 0; margin: 0; overflow: hidden;">
-<textarea style="width: 100%; height: 100%; position: absolute; border: 0;" id="mainTextArea"></textarea>
+	<textarea style="width: 100%; height: 100%; position: absolute; border: 0; padding: 0; outline: 0 solid #fff;" id="mainTextArea"></textarea>
 </body>
 </html>
